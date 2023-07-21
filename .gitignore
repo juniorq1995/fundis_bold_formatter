@@ -1,1 +1,5 @@
 .env
+*.csv
+bold_upload
+image_upload
+*.zip
