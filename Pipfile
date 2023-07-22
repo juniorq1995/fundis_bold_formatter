@@ -11,6 +11,8 @@ pandas = "*"
 datetime = "*"
 requests = "*"
 shutils = "*"
+alive-progress = "*"
+warnings = "*"
 
 [requires]
 python_version = "3.6"
