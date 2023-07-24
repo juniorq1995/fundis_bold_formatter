@@ -333,17 +333,17 @@ def main():
     print(f"Created dataframes for upload data")
 
     print("Writing BOLD data to spreadsheet")
-    with pd.ExcelWriter(os.path.join(bold_dir,'bold_upload.xls')) as writer:
+    with pd.ExcelWriter(os.path.join(bold_dir,'bold_upload.xlsx')) as writer:
 
         # use to_excel function and specify the sheet_name and index
         # to store the dataframe in specified sheet
-        voucher_info_df.to_excel(writer, sheet_name="Voucher Info", index=False)
-        taxonomy_df.to_excel(writer, sheet_name="Taxonomy", index=False)
-        specimen_details_df.to_excel(writer, sheet_name="Specimen Details", index=False)
-        collection_data_df.to_excel(writer, sheet_name="Collection Data", index=False)
+        voucher_info_df.to_excel(writer, sheet_name="Voucher Info", index=False, engine='xlsxwriter')
+        taxonomy_df.to_excel(writer, sheet_name="Taxonomy", index=False, engine='xlsxwriter')
+        specimen_details_df.to_excel(writer, sheet_name="Specimen Details", index=False, engine='xlsxwriter')
+        collection_data_df.to_excel(writer, sheet_name="Collection Data", index=False, engine='xlsxwriter')
 
     print(f"Writing image metadata to spreadsheet")
-    image_metadata_df.to_excel(os.path.join(image_dir, 'ImageData.xls'), index=False)
+    image_metadata_df.to_excel(os.path.join(image_dir, 'ImageData.xlsx'), index=False, engine='xlsxwriter')
 
     # Compress image_dir
     print("Compressing image archive")
