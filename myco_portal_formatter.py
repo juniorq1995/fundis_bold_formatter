@@ -34,7 +34,7 @@ oauth_creds = {
 
 def main():
     input_df = pd.read_csv(input_file, usecols=['iNat number'])
-    inat_nums = [147506910,148072145,147583813] #set(input_df['iNat number'].tolist())
+    inat_nums = set(input_df['iNat number'].tolist())
 
     oauth_response = requests.post(
         "https://www.inaturalist.org/oauth/token", oauth_creds
