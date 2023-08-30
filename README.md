@@ -8,4 +8,3 @@ Instructions:
 5. Copy/download the input csv file (which contains a column with the iNat values named 'iNat number'')
 6. Activate the pipenv (python virtual environment) with the command 'pipenv shell'
 7. In a terminal, from the same directory as inat2bold.py, run 'python inat2bold.py' or 'python inat2bold.py insert_filename_here.csv' if the input file is not named 'input.csv'
-Test
