@@ -1,0 +1,17 @@
+- auto upload to bold (contact them for this)
+- fasta formatiing for standard dna format
+- python bioinformatics work in other dept? possible overhaul and improve perfmornace?
+- medako (neural nets) for dna analysis
+- fasta formatted sheet after providing nat id numbers
+
+>SampleID
+>SampleID hard return then ATCG...
+
+Upload completed fasta file to BOLD (after records have been uploaded to bold)
+
+scrape dna sequence from inat and format as a fasta formatted file. Headers would have to be in the following format: >HAY-F-012345 (then dna sequence after a hard return)
+
+Get dna sequence: https://www.inaturalist.org/observations?project_id=150883&field:DNA%20Barcode%20ITS=
+
+inat2bold bug:
+- final sheet should be in xls instead of xlsx

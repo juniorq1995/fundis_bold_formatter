@@ -409,7 +409,7 @@ def main():
     print(f"Created dataframes for upload data")
 
     print("Writing BOLD data to spreadsheet")
-    with pd.ExcelWriter(os.path.join(bold_dir, "bold_upload.xlsx")) as writer:
+    with pd.ExcelWriter(os.path.join(bold_dir, "bold_upload.xls")) as writer:
         # use to_excel function and specify the sheet_name and index
         # to store the dataframe in specified sheet
         voucher_info_df.to_excel(
@@ -427,7 +427,7 @@ def main():
 
     print(f"Writing image metadata to spreadsheet")
     image_metadata_df.to_excel(
-        os.path.join(image_dir, "ImageData.xlsx"), index=False, engine="xlsxwriter"
+        os.path.join(image_dir, "ImageData.xls"), index=False, engine="xlsxwriter"
     )
 
     # Compress image_dir
