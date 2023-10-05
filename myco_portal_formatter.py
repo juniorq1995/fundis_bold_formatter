@@ -130,9 +130,18 @@ def main():
                 # elif field['field_id'] == 15820:
                 #     associated_fourth = field['value'] # TODO: What are the field ID's for these?
 
-            occurence_remarks = (
-                f"{notes}. {taste}. {odor}. {uv_reaction}. {koh_reaction}"
-            )
+            occurence_remarks = ""
+
+            if notes:
+                occurence_remarks += f"({notes})."
+            if taste:
+                occurence_remarks += f"Taste: {taste}."
+            if odor:
+                occurence_remarks += f"Odor: {odor}."
+            if koh_reaction:
+                occurence_remarks += f"KOH: {koh_reaction}."
+            if uv_reaction:
+                occurence_remarks += f"UV (365 nm): {uv_reaction}."
 
             if associated_second:
                 associated_taxa = f"{associated_taxa}, {associated_second}"

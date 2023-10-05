@@ -66,7 +66,7 @@ def main():
     )
     if oauth_response.status_code != 200:
         print(
-            f"Error getting oauth token from iNat (HTTP {oauth_response.status_code})"
+            f"Error getting oauth token from iNat (HTTP {oauth_response.status_code}). Full response is {oauth_response.content}"
         )
 
     # 2. get JWT token
