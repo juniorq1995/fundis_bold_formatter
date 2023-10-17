@@ -10,7 +10,7 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 
 inat_api_observations_dna_seq_url = "https://api.inaturalist.org/v1/observations?verifiable=true&spam=false&project_id=150883&field%3ADNA+Barcode+ITS="
 
-fasta_dir = "../fundis/fasta_upload"
+fasta_dir = "fasta_upload"
 fasta_output = f"{fasta_dir}/fundis_fasta_upload.txt"
 
 DEFAULT_PAGE_SIZE = 200
