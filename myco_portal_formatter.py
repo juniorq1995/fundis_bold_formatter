@@ -28,7 +28,7 @@ view_metadata = "Fruitbody"
 oauth_creds = {
     "client_id": os.getenv("client_id"),
     "client_secret": os.getenv("client_secret"),
-    "username": os.getenv("username"),
+    "email": os.getenv("email"),
     "password": os.getenv("password"),
     "grant_type": "password",
 }
@@ -43,7 +43,7 @@ def main():
     )
     if oauth_response.status_code != 200:
         print(
-            f"Error getting oauth token from iNat (HTTP {oauth_response.status_code})"
+            f"Error getting oauth token from iNat (HTTP {oauth_response.status_code}). Full response is {oauth_response.content}"
         )
 
     # 2. get JWT token
