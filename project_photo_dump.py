@@ -39,7 +39,7 @@ def get_all_inat_obs(client):
             json_responses = raw_response.json()["results"]
             total_responses.extend(json_responses)
             bar()
-    print(f"Len of total_responses is {len(total_responses)}")
+    print(f"{len(total_responses)} observations retrieved.")
     return total_responses
 
 def main():
@@ -65,6 +65,8 @@ def main():
                 # No need to download the file if it is already present
                 if os.path.exists(os.path.join(photo_dir, filename)):
                     continue
+                # else:
+                #     print(field_id)
                 with open(os.path.join(photo_dir, filename), "wb") as f:
                     f.write(requests.get(image_url).content)
             else:
