@@ -105,7 +105,7 @@ def main():
             coordinate_accuracy = result["positional_accuracy"]
             # Sample ID/Collection Code (HAY-F*****)
             sample_id = ""
-            identifier = "" # Accession Number
+            identifier = ""  # Accession Number
             notes = ""
             habitat_description = ""
             for field in result["ofvs"]:
@@ -123,23 +123,11 @@ def main():
             )
             # Taxonomy:
             # Sample ID, Phylum, Class, Order, Family, Subfamily, Tribe, Genus, Species, Subspecies, Identifier, Identifier_Email, Identification_Method, Taxonomy_Notes
-            phylum = (
-                taxon_class
-            ) = (
-                order
-            ) = (
-                family
-            ) = (
-                subfamily
-            ) = (
-                tribe
-            ) = (
-                genus
-            ) = (
+            phylum = taxon_class = order = family = subfamily = tribe = genus = (
                 species
-            ) = (
-                subspecies
-            ) = identifier_email = identification_method = taxonomy_notes = ""
+            ) = subspecies = identifier_email = identification_method = (
+                taxonomy_notes
+            ) = ""
             for field in result["identifications"][0]["taxon"]["ancestors"]:
                 if field["rank"] == "phylum":
                     phylum = field["name"]

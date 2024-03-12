@@ -23,30 +23,36 @@ parser = argparse.ArgumentParser()
 # add arguments to the parser
 parser.add_argument("input_file", default="input.csv")
 
+
 def get_all_dna_seq_inat_obs(client, inat_ids=()):
     # Get first page
     raw_response = client.get(f"{inat_api_observations_dna_seq_url}&per_page=0&page=1")
     json_response = raw_response.json()
 
     # Get total number of observations with a dna sequence
-    total_results = json_response['total_results']
+    total_results = json_response["total_results"]
 
-    num_pages = int(total_results / DEFAULT_PAGE_SIZE) + (total_results % DEFAULT_PAGE_SIZE > 0)
+    num_pages = int(total_results / DEFAULT_PAGE_SIZE) + (
+        total_results % DEFAULT_PAGE_SIZE > 0
+    )
     print(f"Retrieving {num_pages} pages of data")
     total_responses = []
     with alive_bar(num_pages) as bar:
-        for page_num in range(1, num_pages+1):
-            raw_response = client.get(f"{inat_api_observations_dna_seq_url}&per_page={DEFAULT_PAGE_SIZE}&page={page_num}")
+        for page_num in range(1, num_pages + 1):
+            raw_response = client.get(
+                f"{inat_api_observations_dna_seq_url}&per_page={DEFAULT_PAGE_SIZE}&page={page_num}"
+            )
             json_responses = raw_response.json()["results"]
             if inat_ids:
                 for result in json_responses:
-                    if result['id'] in inat_ids:
+                    if result["id"] in inat_ids:
                         total_responses.append(result)
             else:
                 total_responses.extend(json_responses)
             bar()
     print(f"Len of total_responses is {len(total_responses)}")
     return total_responses
+
 
 def main():
     args = parser.parse_args()
@@ -55,7 +61,9 @@ def main():
     inat_nums = []
     try:
         input_df = pd.read_csv(args.input_file, usecols=["iNat number"]).dropna()
-        inat_nums = set([int(inat_id) for inat_id in input_df["iNat number"] if inat_id])
+        inat_nums = set(
+            [int(inat_id) for inat_id in input_df["iNat number"] if inat_id]
+        )
     except Exception as e:
         print(f"Error: {e}")
         pass
@@ -88,6 +96,7 @@ def main():
                 else:
                     print(f"ERROR: DNA sequence missing for {sample_id}!")
                 bar()
+
 
 if __name__ == "__main__":
     main()

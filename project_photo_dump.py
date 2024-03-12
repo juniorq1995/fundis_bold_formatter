@@ -23,25 +23,31 @@ parser = argparse.ArgumentParser()
 # add arguments to the parser
 parser.add_argument("input_file", default="input.csv")
 
+
 def get_all_inat_obs(client):
     # Get first page
     raw_response = client.get(f"{inat_api_observations_dna_seq_url}&per_page=0&page=1")
     json_response = raw_response.json()
 
     # Get total number of observations with a dna sequence
-    total_results = json_response['total_results']
+    total_results = json_response["total_results"]
 
-    num_pages = int(total_results / DEFAULT_PAGE_SIZE) + (total_results % DEFAULT_PAGE_SIZE > 0)
+    num_pages = int(total_results / DEFAULT_PAGE_SIZE) + (
+        total_results % DEFAULT_PAGE_SIZE > 0
+    )
     print(f"Retrieving {num_pages} pages of data")
     total_responses = []
     with alive_bar(num_pages) as bar:
-        for page_num in range(1, num_pages+1):
-            raw_response = client.get(f"{inat_api_observations_dna_seq_url}&per_page={DEFAULT_PAGE_SIZE}&page={page_num}")
+        for page_num in range(1, num_pages + 1):
+            raw_response = client.get(
+                f"{inat_api_observations_dna_seq_url}&per_page={DEFAULT_PAGE_SIZE}&page={page_num}"
+            )
             json_responses = raw_response.json()["results"]
             total_responses.extend(json_responses)
             bar()
     print(f"{len(total_responses)} observations retrieved.")
     return total_responses
+
 
 def main():
     client = requests.Session()
@@ -61,7 +67,7 @@ def main():
                 image = photos[0]
                 image_url = image["photo"]["url"]
                 image_url = image_url.replace("square", "medium")
-                file_ext = image_url.split('.')[-1]
+                file_ext = image_url.split(".")[-1]
                 filename = f"{result['id']}_medium.{file_ext}"
 
                 # No need to download the file if it is already present
@@ -73,7 +79,9 @@ def main():
                     f.write(requests.get(image_url).content)
                     file_list.append(filename)
             else:
-                print(f"{field_id} has no photos attached to the iNaturalist observation. Skipping...")
+                print(
+                    f"{field_id} has no photos attached to the iNaturalist observation. Skipping..."
+                )
             bar()
     # Compress image_dir
     print("Compressing image archive")
@@ -81,8 +89,10 @@ def main():
     print("Done!")
 
     print(f"Writing image filenames to {image_ref_file}")
-    with open(os.path.join(photo_dir, image_ref_file), 'w') as outfile:
-        outfile.write('\n'.join(str(i) for i in file_list))
+    with open(os.path.join(photo_dir, image_ref_file), "w") as outfile:
+        outfile.write("\n".join(str(i) for i in file_list))
     print("Done!")
+
+
 if __name__ == "__main__":
     main()
