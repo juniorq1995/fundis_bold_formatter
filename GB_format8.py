@@ -88,4 +88,4 @@ print("Mission complete, go get em tiger!. Check new_source_modifiers.tsv and ne
 and rename them in an informative way. Move everything except for this program and the iNaturalist data to a new folder \
 and name it in a way that tells you what you did and when you did it for future reference. Very important. Byeeeeeeeeeeeeee!")
 
-# TODO: Add coordionates and source modifier file tsv
+# TODO: Add coordionates and source modifier file tsv (https://www.ncbi.nlm.nih.gov/WebSub/html/help/genbank-source-table.html)
