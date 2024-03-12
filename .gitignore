@@ -7,3 +7,5 @@ myco_upload
 project_photos
 *.zip
 *.txt
+*.fasta
+*.tsv

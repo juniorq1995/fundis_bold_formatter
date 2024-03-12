@@ -105,7 +105,7 @@ def main():
             coordinate_accuracy = result["positional_accuracy"]
             # Sample ID/Collection Code (HAY-F*****)
             sample_id = ""
-            identifier = ""
+            identifier = "" # Accession Number
             notes = ""
             habitat_description = ""
             for field in result["ofvs"]:
