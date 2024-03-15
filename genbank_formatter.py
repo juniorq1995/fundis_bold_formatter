@@ -18,6 +18,9 @@ oauth_creds = {
 }
 
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
+LEGAL_FASTA_CHARS = set(
+    ["A", "T", "C", "G", "N", "Y", "R", "M", "W", "S", "K", "H", "B", "V", "D"]
+)
 
 
 def get_client():
@@ -125,13 +128,16 @@ for inat in inat_ids:
     )
 
     if fasta and accession_id:
+        filtered_fasta = "".join([i for i in fasta.upper() if i in LEGAL_FASTA_CHARS])
         lines.append(f">{accession_id}\n")
-        lines.append(f"{fasta}\n")
+        lines.append(f"{filtered_fasta}\n")
+        if len(fasta) > len(filtered_fasta):
+            print(f"Filtered out {len(fasta)-len(filtered_fasta)} illegal chars")
     else:
         if fasta is None:
-            print(f"No FASTA present for iNat {inat}")
+            print(f"No FASTA present for iNat {inat}, skipping")
         else:
-            print(f"No Accession ID present for iNat {inat}")
+            print(f"No Accession ID present for iNat {inat}, skipping")
         continue
 source_modifier_df = pd.DataFrame(
     source_modifier_rows,
@@ -149,10 +155,10 @@ source_modifier_df = pd.DataFrame(
     ],
 )
 # Write updated sequences to a new FASTA file
-with open("new_sequences.fasta", "w") as f:
+with open("sequences.fasta", "w") as f:
     f.writelines(lines)
 
-source_modifier_df.to_csv("new_source_modifiers.tsv", sep="\t", index=False)
+source_modifier_df.to_csv("source_modifiers.tsv", sep="\t", index=False)
 
 print(
     "Mission complete, go get em tiger!. Check new_source_modifiers.tsv and new_sequences.fasta \
@@ -160,4 +166,4 @@ and rename them in an informative way. Move everything except for this program a
 and name it in a way that tells you what you did and when you did it for future reference. Very important. Byeeeeeeeeeeeeee!"
 )
 
-# TODO: Add coordionates and source modifier file tsv (https://www.ncbi.nlm.nih.gov/WebSub/html/help/genbank-source-table.html)
+# TODO: Add lat_lon field (https://www.ncbi.nlm.nih.gov/WebSub/html/help/genbank-source-table.html)
