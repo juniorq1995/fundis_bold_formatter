@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 import os
 from requests.exceptions import JSONDecodeError
-
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,6 +16,8 @@ oauth_creds = {
     "password": os.getenv("password"),
     "grant_type": "password",
 }
+
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
 
 
 def get_client():
@@ -56,6 +58,7 @@ print("Actuating quantum telemetry values")
 
 # Get accession numbers from iNat IDs
 lines = []
+source_modifier_rows = []
 client = get_client()
 for inat in inat_ids:
     inat = int(inat)
@@ -64,14 +67,63 @@ for inat in inat_ids:
         result = raw_response.json()["results"][0]
     except JSONDecodeError:
         print(f"Error returned from iNat {inat} (HTTP {raw_response.status_code})")
-    fasta = None
-    accession_id = None
+        continue
+    fasta = ""
+    accession_id = ""
+    # organism = ""
+    identifier = ""
+    isolate = f"CA FUNDIS iNaturalist # {inat}"
+    collection_date = datetime.strptime(result["observed_on"], "%Y-%m-%d").strftime(
+        "%d-%b-%Y"
+    )  # Should be in '31-Jan-2001' format. Read it in "2023-02-03" format
+    fwd_primer = "ITS1F"
+    rev_primer = "ITS4"
+    ric = ""
+
+    if result["obscured"]:
+        latitude, longitude = result["private_location"].split(",")
+    else:
+        latitude, longitude = result["location"].split(",")
+
+    country = ""
+    # Get city, state, country, county from ex: http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=false
+    geo_url = f"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&key={GOOGLE_MAPS_API_KEY}"
+    geo_response = requests.get(geo_url)
+    geo_json = geo_response.json()
+    for geo_result in geo_json["results"]:
+        for component in geo_result["address_components"]:
+            if "country" in component["types"] and country == "":
+                country = component["long_name"]
+                break
 
     for field in result["ofvs"]:
         if field["field_id"] == 2330:
             fasta = field["value"].upper()
         elif field["field_id"] == 3347:
             accession_id = field["value"].upper()
+            identifier = field["user"]["name"]
+        elif field["field_id"] == 10675:
+            organism = field["value"]
+        elif field["field_id"] == 16718:
+            ric = field["value"]
+
+    note = f"California Fungal Diversity Survey www.fundis.org; iNaturalist.org #{inat}; RiC {ric}"
+
+    source_modifier_rows.append(
+        [
+            accession_id,
+            accession_id,
+            organism,
+            isolate,
+            country,
+            collection_date,
+            identifier,
+            fwd_primer,
+            rev_primer,
+            note,
+        ]
+    )
+
     if fasta and accession_id:
         lines.append(f">{accession_id}\n")
         lines.append(f"{fasta}\n")
@@ -81,10 +133,26 @@ for inat in inat_ids:
         else:
             print(f"No Accession ID present for iNat {inat}")
         continue
-
+source_modifier_df = pd.DataFrame(
+    source_modifier_rows,
+    columns=[
+        "Sequence_ID",
+        "specimen-voucher",
+        "Organism",
+        "Isolate",
+        "Country",
+        "Collection-date",
+        "Collected_by",
+        "Fwd_primer_name",
+        "Rev_primer_name",
+        "Note",
+    ],
+)
 # Write updated sequences to a new FASTA file
 with open("new_sequences.fasta", "w") as f:
     f.writelines(lines)
+
+source_modifier_df.to_csv("new_source_modifiers.tsv", sep="\t", index=False)
 
 print(
     "Mission complete, go get em tiger!. Check new_source_modifiers.tsv and new_sequences.fasta \
